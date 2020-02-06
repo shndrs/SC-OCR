@@ -7,52 +7,99 @@
 //
 
 import UIKit
-import SwiftOCR
 import AVFoundation
+import SwiftOCR
 
-final class ViewController: UIViewController {
-    
-    private var session: AVCaptureSession?
-    private var stillImageOutput: AVCapturePhotoOutput?
-    private var videoPreviewLayer: AVCaptureVideoPreviewLayer?
-    
-    @IBOutlet private weak var photoPreviewImageView: UIImageView!
+final class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    
-    
+    let captureSession = AVCaptureSession()
+    var previewLayer: CALayer!
+    var captureDevice: AVCaptureDevice!
+    var takePhoto = false
+
 }
 
-// MARK: Methods
+// MARK: - Methods
 
 extension ViewController {
-    @IBAction private func didTapOnTakePhotoButton(_ sender: UIButton) {
-        
-    }
     
-    private func cameraSetup() {
-        session = AVCaptureSession()
-        session!.sessionPreset = AVCaptureSession.Preset.photo
-        let backCamera = AVCaptureDevice.default(for: AVMediaType.video)
-        var error: NSError?
-        var input: AVCaptureDeviceInput!
+    @IBAction private func takePhoto(_ sender: Any) {
+        takePhoto = true
+    }
+       
+    func prepareCamera() {
+        captureSession.sessionPreset = AVCaptureSession.Preset.photo
+    
+        let availableDevices = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
+                                                                mediaType: AVMediaType.video,
+                                                                position: .back).devices
+        captureDevice = availableDevices.first
+        beginSession()
+    }
+   
+    private func beginSession () {
         do {
-            input = try AVCaptureDeviceInput(device: backCamera!)
-        } catch let error1 as NSError {
-            error = error1
-            input = nil
-            print(error!.localizedDescription)
-        }
-        if error == nil && session!.canAddInput(input) {
-            session!.addInput(input)
-            stillImageOutput = AVCapturePhotoOutput()
+            let captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
             
-            if session!.canAddOutput(stillImageOutput!) {
-                session!.addOutput(stillImageOutput!)
-                videoPreviewLayer = AVCaptureVideoPreviewLayer(session: session!)
-                videoPreviewLayer!.videoGravity = AVLayerVideoGravity.resizeAspect
-                videoPreviewLayer!.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
-                self.view.layer.addSublayer(videoPreviewLayer!)
-                session!.startRunning()
+            captureSession.addInput(captureDeviceInput)
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        self.previewLayer = previewLayer
+        self.view.layer.addSublayer(self.previewLayer)
+        self.previewLayer.frame = self.view.layer.frame
+        captureSession.startRunning()
+        let dataOutput = AVCaptureVideoDataOutput()
+        dataOutput.videoSettings = [((kCVPixelBufferPixelFormatTypeKey as NSString) as String):NSNumber(value:kCVPixelFormatType_32BGRA)]
+        dataOutput.alwaysDiscardsLateVideoFrames = true
+        if captureSession.canAddOutput(dataOutput) {
+            captureSession.addOutput(dataOutput)
+        }
+        captureSession.commitConfiguration()
+        let queue = DispatchQueue(label: "com.shndrs.captureQueue")
+        dataOutput.setSampleBufferDelegate(self, queue: queue)
+    }
+
+    private func captureOutput(_ captureOutput: AVCaptureOutput!,
+                       didOutputSampleBuffer sampleBuffer: CMSampleBuffer!,
+                       from connection: AVCaptureConnection!) {
+        
+        if takePhoto {
+            takePhoto = false
+            
+            if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
+                let swiftOCRInstance = SwiftOCR()
+                    
+                swiftOCRInstance.recognize(image) { recognizedString in
+                    print(recognizedString)
+                }
+            }
+        }
+    }
+       
+    private func getImageFromSampleBuffer (buffer:CMSampleBuffer) -> UIImage? {
+        if let pixelBuffer = CMSampleBufferGetImageBuffer(buffer) {
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let context = CIContext()
+            
+            let imageRect = CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(pixelBuffer), height: CVPixelBufferGetHeight(pixelBuffer))
+            
+            if let image = context.createCGImage(ciImage, from: imageRect) {
+                return UIImage(cgImage: image, scale: UIScreen.main.scale, orientation: .right)
+            }
+        }
+        return nil
+    }
+       
+    private func stopCaptureSession () {
+        self.captureSession.stopRunning()
+        
+        if let inputs = captureSession.inputs as? [AVCaptureDeviceInput] {
+            for input in inputs {
+                self.captureSession.removeInput(input)
             }
         }
     }
@@ -63,19 +110,10 @@ extension ViewController {
 extension ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        videoPreviewLayer!.frame = self.view.bounds
+        prepareCamera()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let swiftOCRInstance = SwiftOCR()
-        
-        let img = UIImage(named: "melli-example")!
-        
-        swiftOCRInstance.recognize(img) { recognizedString in
-            print(recognizedString)
-        }
-           
-   }
+    }
 }

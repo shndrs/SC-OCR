@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C471BB8C4510FEC4A942A4EC /* Pods_sc_ocr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD03951A1A525A5BDDBA9725 /* Pods_sc_ocr.framework */; };
+		F4144B0923EBFC3C00F29C69 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4144B0823EBFC3C00F29C69 /* PhotoViewController.swift */; };
 		F4B7A24823EBEF6B00142CA8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B7A24723EBEF6B00142CA8 /* AppDelegate.swift */; };
 		F4B7A24A23EBEF6B00142CA8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B7A24923EBEF6B00142CA8 /* SceneDelegate.swift */; };
 		F4B7A24C23EBEF6B00142CA8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B7A24B23EBEF6B00142CA8 /* ViewController.swift */; };
@@ -20,6 +21,7 @@
 		7DB6C847B6EF03EF0F9E16DB /* Pods-sc-ocr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sc-ocr.debug.xcconfig"; path = "Target Support Files/Pods-sc-ocr/Pods-sc-ocr.debug.xcconfig"; sourceTree = "<group>"; };
 		AD03951A1A525A5BDDBA9725 /* Pods_sc_ocr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sc_ocr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D69129C65ED584436B4CCD63 /* Pods-sc-ocr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sc-ocr.release.xcconfig"; path = "Target Support Files/Pods-sc-ocr/Pods-sc-ocr.release.xcconfig"; sourceTree = "<group>"; };
+		F4144B0823EBFC3C00F29C69 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		F4B7A24423EBEF6B00142CA8 /* sc-ocr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sc-ocr.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B7A24723EBEF6B00142CA8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F4B7A24923EBEF6B00142CA8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				F4B7A24723EBEF6B00142CA8 /* AppDelegate.swift */,
 				F4B7A24923EBEF6B00142CA8 /* SceneDelegate.swift */,
 				F4B7A24B23EBEF6B00142CA8 /* ViewController.swift */,
+				F4144B0823EBFC3C00F29C69 /* PhotoViewController.swift */,
 				F4B7A24D23EBEF6B00142CA8 /* Main.storyboard */,
 				F4B7A25023EBEF6C00142CA8 /* Assets.xcassets */,
 				F4B7A25223EBEF6C00142CA8 /* LaunchScreen.storyboard */,
@@ -207,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B7A24C23EBEF6B00142CA8 /* ViewController.swift in Sources */,
+				F4144B0923EBFC3C00F29C69 /* PhotoViewController.swift in Sources */,
 				F4B7A24823EBEF6B00142CA8 /* AppDelegate.swift in Sources */,
 				F4B7A24A23EBEF6B00142CA8 /* SceneDelegate.swift in Sources */,
 			);
